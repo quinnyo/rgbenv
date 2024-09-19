@@ -261,6 +261,14 @@ _use () {
 			done
 			echo
 			
+			# symlink man pages
+			rm -rf "$RGBENV_DEFAULT/man"
+			for i in 1 5 7; do
+				mkdir -p "$RGBENV_DEFAULT/man/man$i"
+				# use find because the pages available and their location depends on version
+				find "$RGBENV_VERSIONS/$RGBDS_PREFIX$1" -type f -name "*.$i" -exec ln -s -t "$RGBENV_DEFAULT/man/man$i" '{}' ';'
+			done
+
 			echo "$1" > "$RGBENV_DEFAULT/version"
 			
 			echo "The default RGBDS has been set to $1."
@@ -286,6 +294,9 @@ _no_use () {
 	fi
 	if [ -d "$RGBENV_DEFAULT/bin" ]; then
 		rm -r "${RGBENV_DEFAULT:?}/bin"
+	fi
+	if [ -d "$RGBENV_DEFAULT/man" ]; then
+		rm -r "${RGBENV_DEFAULT:?}/man"
 	fi
 	echo "Symlinks and version configuration deleted."
 	echo "RGBDS is now managed by the system."
